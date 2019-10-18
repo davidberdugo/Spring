@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="main">
+<head>
+<title>Create Task</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+<p>
+    		Creando tarea para <span th:text="${project_key}"></span>
+    	</p>
+    <form action="#" th:action="@{/tasks/create/}+ ${project_key}" th:object="${task}" method="post">
+    	
+    	<p>Name: <input type="text" th:field="*{name}" required/></p>
+    	
+        <p>
+	        <label>
+	        <input type="checkbox" id="isCompleted" name="isCompleted" value="0" />
+	        <span style="color:black !important;">Completado</span>
+	      </label>
+	    </p>
+        <p><input type="submit" value="Submit" /> | <input type="reset" value="Reset" /></p>
+    </form>
+    <a th:href="@{/project/tasks/}+${project_key}">Volver al proyecto</a>
+    <script type="text/javascript">
+    $("form").submit(function () {
+
+        var this_master = $(this);
+
+        this_master.find('input[type="checkbox"]').each( function () {
+            var checkbox_this = $(this);
+
+
+            if( checkbox_this.is(":checked") == true ) {
+                checkbox_this.attr('value','1');
+            } else {
+                checkbox_this.prop('checked',true);
+                //DONT' ITS JUST CHECK THE CHECKBOX TO SUBMIT FORM DATA    
+                checkbox_this.attr('value','0');
+            }
+        })
+    })
+    </script>
+    </div>
+   
+</body>
+</html>

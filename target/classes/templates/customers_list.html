@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="main">
+<head>
+<title>Customers</title>
+
+</head>
+<body>
+<div layout:fragment="content">
+
+<h1>Lista de clientes</h1>
+
+<div class="col-sm-3 col-md-3 pull-right">
+    <form class="navbar-form" role="search">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search"
+                                                    name="srch-term" id="srch-term">
+            <div class="input-group-btn">
+                <button id="btn-search" class="btn btn-default" type="submit">
+                    buscar
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<a th:href="@{/customers/create}">Crear nuevo</a> <br/><br/><br/>
+
+    <table class="center-align">
+    <thead>
+    	<tr>
+    	<td>key</td>
+    	<td>name</td>
+    	<td>last name</td>
+    	<td>edit</td>
+    	<td>delete</td>
+    	</tr>
+    </thead>
+	<tbody id="customer_data"></tbody>
+</table>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var _csrf_token = /*[[${_csrf.token}]]*/ '';
+    var _csrf_param_name = /*[[${_csrf.parameterName}]]*/ '';
+    /*]]>*/
+</script> 
+ 
+
+<script type="text/javascript">
+
+$( document ).ready(function() {
+    console.log( "ready!" );
+    
+	$("#btn-search").click(function(){
+		
+		search_term = $("#srch-term").val().trim();
+		console.log("search-term: " + search_term);
+		
+		refreshData(search_term);
+		return false;
+	});
+    
+	refreshData("");
+
+})
+
+
+function refreshData(name){
+    var url = "/customersdata/";
+    
+    url += "?name="+name;
+    console.log(url);
+    
+
+	$.ajax({
+		method:"GET",
+		url : url,
+		success : function(result) {
+			if (result.length <= 0)
+				console.log("No hay info");
+			else
+				populateData(result);
+		}
+	});
+    
+	
+}
+
+function populateData(data){
+	new_rows = "";
+	$(data).each(function(index, item) {
+		//pushview(item);
+		//agregarVista(item);
+		console.log(item.key);
+		new_rows+= '<tr><td>' + item.key + '</td>';
+        new_rows+= '<td>'+ item.name + '</td>';
+        new_rows+= '<td>'+ item.lastname + '</td>';
+        new_rows+= '<td> <a class="aeditar"  href="#">editar</a></td>';
+        new_rows+= '<td><a class="aeliminar" data-value="'+item.key+'" href="javascript:void(0)">eliminar</a></td></tr>'
+	});
+	$("#customer_data").html("");
+	$("#customer_data").html(new_rows);
+	
+	 $(".aeliminar").click(function(){
+         eliminar($(this).attr("data-value"));
+     });
+	
+}
+
+function eliminar(data){
+	
+	url = '/customers/delete/?key='+data;
+	console.log(url);
+	var headers_var = {
+			"X-CSRF-TOKEN" : _csrf_token
+		};
+	console.log(headers_var);
+	$.ajax({
+		method:"DELETE",
+		url:url,
+		asyn:true,
+		headers:headers_var,
+		success:function(result){
+			console.log(result);
+			refreshData('');
+		},
+		error: function(result){
+			console.log(result);
+		}
+	});
+	
+}
+
+</script>
+
+
+</div>
+
+
+
+</body>
+
+
+
+</html>

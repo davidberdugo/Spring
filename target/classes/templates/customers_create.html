@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="main">
+<head>
+<title>Create Customer</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+<h2>Crear cliente</h2>
+    <form  th:object="${customer}"  name="customerform">
+    	<p>key: <input type="text" th:field="*{key}" required /></p>
+        <p>Name: <input type="text" th:field="*{name}" required/></p>
+        <p>Last Name: <input type="text" th:field="*{lastname}" required/></p>
+        <p><input id="btn-create" type="submit" value="Submit" /> | <input type="reset" value="Reset" /></p>
+    </form>
+    
+       <a th:href="@{/customers/}">Volver al listado</a>
+       
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var _csrf_token = /*[[${_csrf.token}]]*/ '';
+    var _csrf_param_name = /*[[${_csrf.parameterName}]]*/ '';
+    /*]]>*/
+</script> 
+ 
+       
+<script type="text/javascript">
+
+$( document ).ready(function() {
+	
+	$("#btn-create").click(function(event){
+		event.preventDefault();
+		create_data();
+		return false;
+	});
+	
+});
+
+
+function create_data(){
+	var url = '/customers/create';
+	console.log(url);
+
+	var data={
+		'key': $("#key").val(),
+		'name':$("#name").val(),
+		'lastname':$("#lastname").val()
+	};
+  	
+	//data[_csrf_param_name] = _csrf_token;
+
+  	console.log(JSON.stringify(data));
+	
+  	var headers_var = {
+		"X-CSRF-TOKEN" : _csrf_token
+	};
+  	console.log(headers_var);
+  	
+  	$.ajax({
+     	url : url,
+     	data : JSON.stringify(data),
+     	method:"POST",
+     	//async:false,
+     	headers: headers_var,
+     	contentType: "application/json",
+     	dataType: "JSON",
+     	success : function(res) {
+           	console.log("saved");
+           	window.location.href = "http://localhost:8080/customers/"
+           		
+     
+     	},
+     	error: function(res){
+     		console.log("error");
+     		console.log(res);
+     	}
+     		
+  	});
+  	
+	}
+
+	
+</script>
+       
+       
+</div>
+</body>
+</html>

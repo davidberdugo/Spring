@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="main">
+<head>
+<title>Task list</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+<h2>Proyecto</h2>
+<h3 th:text="${project_key}"></h3>
+
+   <table class="center-align">
+   <thead>
+   <tr>
+   	<td>Id</td>
+   	<td>Name</td>
+   	<td>Completado</td>
+   </tr>
+   
+   </thead>
+   <tbody th:each="task : ${tasks}" th:remove="tag">
+      <tr>
+         <td th:text="${task.id}">...</td>
+         <td th:text="${task.name}">...</td>
+         <td th:text="${task.isCompleted}">...</td>
+      </tr>
+   </tbody>
+</table> <br /><br />
+<a th:href="@{/tasks/create/} + ${project_key}">Crear tarea</a> | 
+<a th:href="@{/projects/}">Volver a proyectos</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="main">
+<head>
+<title>Create Project</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+<h2>Crear proyecto</h2>
+    <form action="#" th:action="@{/projects/create/}" th:object="${project}" method="post">
+    	<p>key: <input type="text" th:field="*{key}" required /></p>
+        <p>Name: <input type="text" th:field="*{name}" required/></p>
+        <p><input type="submit" value="Submit" /> | <input type="reset" value="Reset" /></p>
+    </form>
+    
+       <a th:href="@{/projects/}">Volver al listado</a>
+</div>
+</body>
+</html>
